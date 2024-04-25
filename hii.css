@@ -1,0 +1,89 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'poppins',sans-serif;
+    background-color: #333;
+}
+.hero{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    padding: 0.5%;
+    display: flex;
+    background-image: none;
+    align-items: center;
+    justify-content: center;
+}
+.hero nav{
+    width: 100%;
+    position:absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.hero .fa{
+    margin-right: 8px;
+
+}
+.logo{
+    width: 125px;
+    align-items: start;
+
+}
+.hero ul{
+    display: inline-flex;
+    list-style: none;
+}
+.hero ul li{
+    list-style: none;
+    display: inline-block;
+    margin-left: 30px;
+    padding: 20px;
+} 
+.hero ul li a{
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+}
+ul li il.dropdown li{
+    display: block;
+    background: none;
+    margin: 2px 0px;
+}
+ul li ul.dropdown{
+    width: auto;
+    background: none;
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+ul li:hover ul.dropdown{
+    display: block;
+}
+ul li a:hover{
+    background: none;
+}
+.content{
+    text-align: center;
+}
+.content h1{
+    font-size: 30px;
+    color: #fff;
+    font-weight: 600;
+    margin-top: 80PX;
+}
+.content a{
+    text-decoration: none;
+    display: inline-block;
+    color: #fff;
+    font-size: 24px;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    padding: 14px 80px;
+    margin-top: 80px;
+}

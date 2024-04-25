@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: rgb(150, 187, 211);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .add{
+            align-content: left;
+        }
+        .graph{
+            float: right;
+            margin-right: 100px;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        section {
+            padding: 0;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            border-bottom: 1px solid #ddd;
+            width: 200px;
+            padding: 0.5rem 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 1rem;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100px;
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #expense-form {
+            margin-top: 40px;
+            margin-left: 30px;
+            font-size: 25px;
+            border-radius: 15px;
+        }
+
+        #transaction-list {
+            margin-left: 40px;
+        }
+        legend{
+            font-family: "Grape Nuts", cursive;
+        }
+        .sm{
+            justify-content: space-between;
+        }
+        .back{
+            width: 100%;
+            height: 1100px;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+  <fieldset>
+            <legend><h1>Expenses</h1></legend>
+        <div class="add">
+    <form id="expense-form" class="expense">
+        <label for="expense-name">Expense Name:</label>
+        <input type="text" id="expense-name" name="expense-name">
+        <label for="expense-amount">Expense Amount:</label>
+        <input type="number" id="expense-amount" name="expense-amount">
+        <button type="submit" onclick="addTotransaction()">Add Expense</button>
+    </form>
+    <section style="float: right;">
+        <h3>History</h3>
+        <ul class="sm"><li>Source &nbsp; - &nbsp;&nbsp;  Money</li>
+        </ul>
+        <ul id="transaction-list">
+            <!-- Expenses will be added here -->
+        </ul>
+    </section>
+        <h2>Expenses</h2>
+        <p id="total-amount">Total: $0.00</p>
+    </div>
+    <div class="graph">
+    <section>
+        <h2>Expense Graph</h2>
+        <canvas id="expenseChart" style="max-width: 800px;height: 400px; font-size: 80px;"></canvas>
+    </section>
+    </div>
+</fieldset>
+    <script>
+        const expenseForm = document.getElementById('expense-form');
+        const expenseList = document.getElementById('transaction-list');
+        let expenses = [];
+        expenseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const expenseName = document.getElementById('expense-name').value;
+            const expenseAmount = parseFloat(document.getElementById('expense-amount').value);
+            if (!expenseName || !expenseAmount) {
+                return;
+            }
+            expenses.push({ name: expenseName, amount: expenseAmount });
+            updateExpenses();
+            updateTotal();
+            updateChart();
+            expenseForm.reset();
+        });
+        function updateExpenses() {
+            expenseList.innerHTML = '';
+            expenses.forEach((expenseItem) => {
+                const li = document.createElement('li');
+                li.textContent = `${expenseItem.name} - ₹${expenseItem.amount.toFixed(2)}`;
+                expenseList.appendChild(li);
+            });
+        }
+        function updateTotal() {
+            let totalExpenses = expenses.reduce((total, expenseItem) => total + expenseItem.amount, 0);
+            let totalAmount = totalExpenses;
+            document.getElementById('total-amount').textContent = `Total: ₹${totalAmount.toFixed(2)}`;
+        }
+        function updateChart() {
+            expenseChartInstance.data.labels = expenses.map(e => e.name);
+            expenseChartInstance.data.datasets[0].data = expenses.map(e => e.amount);
+            expenseChartInstance.update();
+        }
+        const expenseChart = document.getElementById('expenseChart').getContext('2d');
+        const expenseChartData = {
+            labels: [],
+            datasets: [{
+                label: 'Expenses',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        };
+        const expenseChartOptions = {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+        const expenseChartInstance = new Chart(expenseChart, {
+            type: 'bar',
+            data: expenseChartData,
+            options: expenseChartOptions
+        });
+    </script>
+<script>
+    function addTotransaction() {
+    const expenseName = document.getElementById('expense-name').value;
+    const expenseAmount = parseFloat(document.getElementById('expense-amount').value);
+  
+    if (!expenseName || !expenseAmount) {
+      return;
+    }
+  
+    var cart = localStorage.getItem('transaction-list');
+    if (!cart) {
+      cart = [];
+    } else {
+      cart = JSON.parse(cart);
+    }
+    var product = {name: expenseName, price: expenseAmount*(-1)};
+    cart.push(product);
+    localStorage.setItem('transaction-list', JSON.stringify(cart));
+  }
+    </script>
+</body>
+</html>

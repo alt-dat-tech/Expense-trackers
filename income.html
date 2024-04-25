@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(150, 187, 211);
+            margin: 0;
+            padding: 0;
+        }
+        section {
+            padding: 0;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            border-bottom: 1px solid #ddd;
+            width: 200px;
+            padding: 0.5rem 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 1rem;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100px;
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 0.5rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        #income-form {
+            margin-top: 40px;
+            margin-left: 30px;
+            font-size: 20px;
+        }
+
+        #transaction-list {
+            margin-left: 40px;
+        }
+        #total-amount{
+            margin-left: 40px;
+            font-size: 30px;
+        }
+        legend{
+            font-family: "Grape Nuts", cursive;
+        }
+    </style>
+</head>
+<body>
+    <fieldset>
+       <legend><h1>Income</h1></legend>
+    <form id="income-form" class="income">
+        <label for="income-name">Income Name:</label>
+        <input type="text" id="income-name" name="income-name">
+        <label for="income-amount">Income Amount:</label>
+        <input type="number" id="income-amount" name="income-amount">
+        <button type="submit" onclick="addTotransaction()">Add Income</button>
+    </form>
+    <section style="float: right;">
+        <h3>History</h3>
+        <ul class="sm"><li>Source &nbsp; - &nbsp;&nbsp;  Money</li>
+        </ul>
+        <ul id="transaction-list">
+            <!-- Income will be added here -->
+        </ul>
+    </section>
+    <h1>Income</h1>
+    <p id="total-amount">Total: $0.00</p>
+    <section style="float: right;
+    margin-right: 100px;
+    font-size: 20px;
+    margin-top: 0;
+    ">
+        <h2>Income Graph</h2>
+        <canvas id="incomeChart" style="max-width: 800px;height: 400px; font-size: 80px;"></canvas>
+    </section>
+</fieldset>
+    <script>
+        const incomeForm = document.getElementById('income-form');
+        const incomeList = document.getElementById('transaction-list');
+        let income = [];
+        
+        incomeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const incomeName = document.getElementById('income-name').value;
+            const incomeAmount = parseFloat(document.getElementById('income-amount').value);
+            if (!incomeName || !incomeAmount) {
+                return;
+            }
+            income.push({ name: incomeName, amount: incomeAmount });
+            updateIncome();
+            updateTotal();
+            updateChart();
+            incomeForm.reset();
+        });
+        
+        function updateIncome() {
+            incomeList.innerHTML = '';
+            income.forEach((incomeItem) => {
+                const li = document.createElement('li');
+                li.textContent = `${incomeItem.name} - ₹${incomeItem.amount.toFixed(2)}`;
+                incomeList.appendChild(li);
+            });
+        }
+        
+        function updateTotal() {
+            let totalIncome = income.reduce((total, incomeItem) => total + incomeItem.amount, 0);
+            let totalAmount = totalIncome;
+            document.getElementById('total-amount').textContent = `Total: ₹${totalAmount.toFixed(2)}`;
+        }
+
+        function updateChart() {
+            incomeChartInstance.data.labels = income.map(i => i.name);
+            incomeChartInstance.data.datasets[0].data = income.map(i => i.amount);
+            incomeChartInstance.update();
+        }
+        const incomeChart = document.getElementById('incomeChart').getContext('2d');
+        const incomeChartData = {
+            labels: [],
+            datasets: [{
+                label: 'Income',
+                data: [],
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        };
+        const incomeChartOptions = {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+        const incomeChartInstance = new Chart(incomeChart, {
+            type: 'bar',
+            data: incomeChartData,
+            options: incomeChartOptions
+        });
+    </script>
+<script>
+  function addTotransaction() {
+  const incomeName = document.getElementById('income-name').value;
+  const incomeAmount = parseFloat(document.getElementById('income-amount').value);
+  if (!incomeName || !incomeAmount) {
+    return;
+  }
+  var cart = localStorage.getItem('transaction-list');
+  if (!cart) {
+    cart = [];
+  } else {
+    cart = JSON.parse(cart);
+  }
+  var product = {name: incomeName, price: incomeAmount};
+  cart.push(product);
+  localStorage.setItem('transaction-list', JSON.stringify(cart));
+}
+  </script>
+</body>
+</html>

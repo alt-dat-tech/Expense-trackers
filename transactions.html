@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="shortcut icon" type="image/png" href="images/logo.png">
+    <title>Transactions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url(images/dollar.jpg);
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 36px;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            font-size: 24px;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            color: black;
+            background-color: #f2f2f2;
+        }
+
+        .transaction-item button {
+            height: 30px;
+            width: 80px;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: rgb(67 0 86);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .transaction-item button:hover {
+            background-color:rgb(67 0 86);
+        }
+
+        #total {
+            color: #fff;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        button.checkout-btn {
+            margin-top: 20px;
+            height: 40px;
+            width: 120px;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            text-decoration-line: none;
+        }
+
+        button.checkout-btn:hover {
+            background-color:rgb(67 0 86);
+            color: #fff;
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Transactions History</h1>
+    <form id="transaction-form">
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-items"></tbody>
+        </table>
+        <p id="total">Total: </p>
+        <button type="submit" class="checkout-btn" onclick="redirectToContactPage()">
+            <a href="email.html" id="checkout-link">If any problem</a>
+        </button>
+    </form>
+    <script>
+        var transactionItemsList = document.getElementById('transaction-items');
+        var totalSpan = document.getElementById('total');
+        var transaction = JSON.parse(localStorage.getItem('transaction-list')) || [];
+
+        function success(){
+            alert("Moving onto Payment Page");
+        }
+        function updatetransaction() {
+            transactionItemsList.innerHTML = '';
+            var totalAmount = 0;
+            transaction.forEach(function(product, index) {
+                var row = document.createElement('tr');
+                row.className = "transaction-item";
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.price}</td>
+                    <td><button class="remove-btn" onclick="removeItem(${index})">Remove</button></td>
+                `;
+                transactionItemsList.appendChild(row);
+                totalAmount += parseFloat(product.price);
+            });
+            totalSpan.textContent = 'Total: ₹' + totalAmount.toFixed(2);
+        }
+        function removeItem(index) {
+            transaction.splice(index, 1);
+            localStorage.setItem('transaction-list', JSON.stringify(transaction));
+            updatetransaction();
+        }
+        updatetransaction();
+        function redirectToContactPage() {
+    var transactionItems = JSON.stringify(transaction);
+    var checkoutLink = document.getElementById('checkout-link');
+    checkoutLink.href = 'email.html?transaction=' + encodeURIComponent(transactionItems);
+        }
+    </script>
+</body>
+</html>

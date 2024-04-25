@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>login</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+    }
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: url(images/back2.jpg);
+        /* background: #333; */
+    }
+    .wrapper{
+        height: 500px;
+        width: 500px;
+        background: transparent;
+        color: #fff;
+        border-radius: 20px;
+        padding: 30px 40px;
+        border: 2px solid rgba(255,255,255, .2);
+        backdrop-filter: blur(20px);
+    }
+    .wrapper h1{
+        font-size: 36px;
+        text-align: center;
+    }
+    .wrapper .input-box{
+        color: #fff;
+        position: relative;
+        width: 100%;
+        height: 60px;
+        margin: 30px 0;
+    }
+    .input-box input{
+        color: #fff;
+        padding-left: 30px;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        border: 2px solid rgba(255,255,255, .2);
+        border-radius: 40px;
+        font-weight: 600;
+    }
+    .input-box input::placeholder{
+        color: #fff;
+        font-size: 16px;
+        padding-left: 10px;
+        font-weight: 600;
+    }
+    .input-box i{
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        color: #fff;
+    }
+    .remember{
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        margin: -15px 0 15px;
+    }
+    .remember label input{
+        accent-color: #fff;
+        margin-right: 3px;
+        margin-left: 20px;
+
+    }
+    .remember a{
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        padding-right: 10px;
+    }
+    .remember a:hover{
+        text-decoration: underline;
+    }
+    .btn{
+        width: 100%;
+        height: 50px;
+        border-radius: 40px;
+        border: none;
+        box-shadow: 0 0 10px rgba(0,0,0,.1);
+        font-size: 20px;
+        cursor: pointer;
+        color:#333;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+    .register{
+        font-size: 20px;
+        text-align: center;
+        margin-top: 45px;
+    }
+    .register p a{
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .register p a:hover{
+        text-decoration: underline;
+    }
+    .home{
+        display: block;
+        float: inline-start;
+
+    }
+    .tohome {
+    background: transparent;
+    color: azure;
+    border: none;
+    border-radius: 10px;
+    height: 50px;
+    width:105px;
+    cursor:pointer;
+    font-size: 30px;
+    transition:box-shadow(0.15s);   
+}
+.home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 20px;
+}
+.tohome:hover{
+    box-shadow:5px 5px 5px rgba(0,0,0,0.15);
+    opacity:0.8;
+}
+    .back{
+    text-decoration: none;
+    color: white;
+    
+}
+</style>
+</head>
+<body>
+    <div class="home">
+        <a href="home.html" class="back"> <button class="tohome">❮ Back</button></a></div>
+    <div class="wrapper">
+        <form action="">
+    <h1>LOGIN</h1>
+    <div class="input-box">
+        <input type="text" id="username" placeholder="Username" required><i class='bx bxs-user'></i>
+    </div>
+    <div class="input-box">
+        <input type="password" id="password" placeholder="password" required>
+    </div>
+    <div class="remember">
+        <label><input type="checkbox">Remember me</label>
+        <a href="#">Forgot password</a>
+    </div>
+    <a href="home.html"><button type="submit" class="btn" id="btn" onclick="login()">Submit </button></a>
+    <div class="register">
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+    </form>
+    </div>
+    <script>
+        document.getElementById('btn').addEventListener('click', async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                if (response.status === 200) {
+                    window.location.href = '/home.html';
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error('Error logging in:', error);
+                alert('Error logging in. Please try again later.');
+            }
+        });
+    </script>
+</body>
+</html>
